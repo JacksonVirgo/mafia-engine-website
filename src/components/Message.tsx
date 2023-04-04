@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { api } from "~/utils/api";
-import { Channel, DiscordAccount, Message } from "@prisma/client";
+import React, { useState } from "react";
+import { DiscordAccount, Message } from "@prisma/client";
 import Content from "./message/Content";
 import Image from "next/image";
 
@@ -24,8 +23,8 @@ function addLeadingZero(value: number) {
 }
 
 const Message: React.FC<MessageProps> = ({ msg }) => {
-  const [date, setDate] = useState(formatDate(msg.createdAt));
-  const [avatar, setAvatar] = useState(
+  const [date, _setDate] = useState(formatDate(msg.createdAt));
+  const [avatar, _setAvatar] = useState(
     msg.author.avatarUrl ??
       "https://cdn.discordapp.com/avatars/181373580716539904/41ed47c71315e75fca9dfcb172ba0bf5.png"
   );

@@ -4,7 +4,6 @@ import { api } from "~/utils/api";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Channel, DiscordAccount, Message } from "@prisma/client";
-import TextMessage from "~/components/message/Content";
 import MessageComp from "~/components/Message";
 
 type MessageData = Message & {
@@ -72,7 +71,7 @@ const ChannelArchive: NextPage = () => {
           <div>{id}</div>
         </div>
         {messages.map((v) => {
-          return <MessageComp msg={v} />;
+          return <MessageComp msg={v} key={v.messageId} />;
         })}
       </main>
     </>

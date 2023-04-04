@@ -18,7 +18,7 @@ const UserMention = ({ id }: IDProps) => {
         setDisplayName("@Unknown User");
       }
     }
-  }, [userData]);
+  }, [userData, id]);
 
   return <span className="rounded bg-discord-mention">{displayName}</span>;
 };
@@ -30,13 +30,13 @@ interface MessageProps {
 const Message: React.FC<MessageProps> = ({ text }) => {
   const userMentionRegex = /<@(\S+)>/g;
   const userMentionMatches = [...text.matchAll(userMentionRegex)];
-  const emojiRegex = /<:([a-zA-Z0-9_]+):(\d+)>/g;
+  //   const emojiRegex = /<:([a-zA-Z0-9_]+):(\d+)>/g;
 
   let currentIndex = 0;
   const renderedText = userMentionMatches.map((match, index) => {
     const matchIndex = match.index || 0;
     const matchText = match[0];
-    const matchId = match[1];
+    // const matchId = match[1];
 
     const textBeforeMatch = text.slice(currentIndex, matchIndex);
     currentIndex = matchIndex + matchText.length;
