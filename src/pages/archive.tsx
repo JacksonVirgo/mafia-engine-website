@@ -32,7 +32,7 @@ function reorderMessages(msg: MessageData[]) {
 
 const ChannelArchive: NextPage = () => {
     const router = useRouter();
-    const { id } = router.query;
+    // const { id } = router.query;
     const pageData = api.archive.getChannel.useQuery({
         // channelId: id ? (id as string) : "",
         channelId: "1082940469203435551",

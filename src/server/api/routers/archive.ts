@@ -3,7 +3,7 @@ import { z } from "zod";
 import {
     createTRPCRouter,
     publicProcedure,
-    privateProcedure,
+    // privateProcedure,
 } from "~/server/api/trpc";
 
 function extractMentionedUserId(mention: string): string | undefined {
@@ -118,9 +118,4 @@ export const archiveRouter = createTRPCRouter({
 
             return data;
         }),
-    getCache: privateProcedure.query(async ({ ctx }) => {
-        const authorId = ctx.currentUser.id;
-
-        return {};
-    }),
 });
