@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { api } from "~/utils/api";
 import Channel from "./Channel";
 
@@ -10,7 +10,7 @@ type ChannelArchiveProps = {
 export default function ChannelPage({ defaultChannelId }: ChannelArchiveProps) {
     const router = useRouter();
     const [focusedChannel, setFocusedChannel] = useState(defaultChannelId);
-    const [isLoading, setIsLoading] = useState(true);
+    // const [isLoading, setIsLoading] = useState(true);
 
     const channels = api.archive.getAllChannels.useQuery({});
 

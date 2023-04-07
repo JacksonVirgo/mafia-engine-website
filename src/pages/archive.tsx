@@ -2,15 +2,13 @@ import { GetServerSideProps } from "next";
 import { prisma } from "~/server/db";
 import Head from "next/head";
 import { Channel } from "@prisma/client";
-import { useState } from "react";
-import { api } from "~/utils/api";
 import ChannelPage from "~/components/ChannelPage";
 
 const DEFAULT_DESC = "View archive data for a Discord channel";
 
 export default function DefaultArchive({ channel }: Context) {
-    const [focusedChannel, setFocusedChannel] = useState(channel?.channelId);
-    const channels = api.archive.getAllChannels.useQuery({});
+    // const [focusedChannel, setFocusedChannel] = useState(channel?.channelId);
+    // const channels = api.archive.getAllChannels.useQuery({});
 
     return (
         <>

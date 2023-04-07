@@ -3,7 +3,7 @@ import {
     Channel as PrismaChannel,
     Message,
 } from "@prisma/client";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { api } from "~/utils/api";
 import MessageComp from "./Message";
 
@@ -34,23 +34,14 @@ type ChannelProps = {
     channelId?: string;
 };
 export default function Channel({ channelId }: ChannelProps) {
-    if (channelId === undefined)
-        return (
-            <div className="flex grow flex-col bg-discord-dark pl-4">
-                Invalid Channel
-            </div>
-        );
-
+    const [channel, setChannel] = useState<PrismaChannel>();
+    const [messages, setMessages] = useState<MessageData[]>([]);
     const pageData = api.archive.getChannel.useQuery({
         // channelId: id ? (id as string) : "",
         channelId: channelId,
         take: 25,
         skip: 0,
     });
-
-    const [channel, setChannel] = useState<PrismaChannel>();
-    const [messages, setMessages] = useState<MessageData[]>([]);
-
     useEffect(() => {
         if (pageData.isFetched) {
             const channel = pageData.data?.channel;
@@ -61,6 +52,13 @@ export default function Channel({ channelId }: ChannelProps) {
             }
         }
     }, [pageData]);
+
+    if (channelId === undefined)
+        return (
+            <div className="flex grow flex-col bg-discord-dark pl-4">
+                Invalid Channel
+            </div>
+        );
 
     return (
         <div className="flex grow flex-col bg-discord-dark pl-4">
