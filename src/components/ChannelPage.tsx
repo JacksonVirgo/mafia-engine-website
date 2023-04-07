@@ -10,8 +10,6 @@ type ChannelArchiveProps = {
 export default function ChannelPage({ defaultChannelId }: ChannelArchiveProps) {
     const router = useRouter();
     const [focusedChannel, setFocusedChannel] = useState(defaultChannelId);
-    // const [isLoading, setIsLoading] = useState(true);
-
     const channels = api.archive.getAllChannels.useQuery({});
 
     const newChannel = (id: string) => {
@@ -28,7 +26,11 @@ export default function ChannelPage({ defaultChannelId }: ChannelArchiveProps) {
                         : channels.data?.map((v) => {
                               return (
                                   <div
-                                      className="py-2 pl-2 text-base hover:cursor-pointer hover:bg-gray-600"
+                                      className={`py-2 pl-2 text-base hover:cursor-pointer hover:bg-gray-600 ${
+                                          focusedChannel === v.channelId
+                                              ? "bg-gray-400"
+                                              : ""
+                                      }`}
                                       key={v.channelId}
                                       onClick={() => {
                                           newChannel(v.channelId);
