@@ -101,9 +101,13 @@ export function ChannelHydrated({ channel, messages }: Hydration) {
 }
 
 export function ChannelSkeleton() {
-    /// create a function which returns X unique spans, where X is an arbitrary numver
+    /// create a function which returns X unique spans, where X is an arbitrary number. Removing all use of the any type
     const createSkeleton = (num: number) => {
-        return [...Array(num)].map((_, i) => <MessageSkeleton key={i} />);
+        const arr = [];
+        for (let i = 0; i < num; i++) {
+            arr.push(<MessageSkeleton key={i} />);
+        }
+        return arr;
     };
 
     return (
