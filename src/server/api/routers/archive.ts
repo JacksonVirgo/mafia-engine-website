@@ -51,6 +51,26 @@ export const archiveRouter = createTRPCRouter({
                         error: "Channel does not exist",
                     };
 
+                // const array = data.messages;
+                // const len = array.length;
+                // for (let i = 0; i < len; i++) {
+                //     for (let j = 0; j < len; j++) {
+                //         const jVal = array[j];
+                //         const jValAdd = array[j + 1];
+
+                //         if (jVal && jValAdd) {
+                //             if (
+                //                 jVal.createdAt.getTime() <
+                //                 jValAdd.createdAt.getTime()
+                //             ) {
+                //                 [array[j], array[j + 1]] = [jValAdd, jVal];
+                //             }
+                //         }
+                //     }
+                // }
+
+                // data.messages = array;
+
                 return {
                     channel: data,
                     error: null,

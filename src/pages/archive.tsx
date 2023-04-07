@@ -1,103 +1,67 @@
-import { type NextPage } from "next";
+import { GetServerSideProps } from "next";
+import { prisma } from "~/server/db";
 import Head from "next/head";
+import { Channel } from "@prisma/client";
+import { useState } from "react";
 import { api } from "~/utils/api";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { Channel, DiscordAccount, Message } from "@prisma/client";
-import MessageComp from "~/components/Message";
+import ChannelPage from "~/components/ChannelPage";
 
-type MessageData = Message & {
-    author: DiscordAccount;
-};
+const DEFAULT_DESC = "View archive data for a Discord channel";
 
-// Bubble Sort. Earliest = first
-function reorderMessages(msg: MessageData[]) {
-    const len = msg.length;
-    const array = msg;
-    for (let i = 0; i < len; i++) {
-        for (let j = 0; j < len; j++) {
-            const jVal = array[j];
-            const jValAdd = array[j + 1];
+export default function DefaultArchive({ channel }: Context) {
+    const [focusedChannel, setFocusedChannel] = useState(channel?.channelId);
+    const channels = api.archive.getAllChannels.useQuery({});
 
-            if (jVal && jValAdd) {
-                if (jVal.createdAt.getTime() < jValAdd.createdAt.getTime()) {
-                    [array[j], array[j + 1]] = [jValAdd, jVal];
-                }
-            }
-        }
-    }
-
-    return msg;
-}
-
-const ChannelArchive: NextPage = () => {
-    const router = useRouter();
-    // const { id } = router.query;
-    const pageData = api.archive.getChannel.useQuery({
-        // channelId: id ? (id as string) : "",
-        channelId: "1082940469203435551",
-        take: 25,
-        skip: 0,
-    });
-
-    const { data: channels, isLoading: channelsLoading } =
-        api.archive.getAllChannels.useQuery({
-            take: 25,
-            skip: 0,
-        });
-
-    const [channel, setChannel] = useState<Channel>();
-    const [messages, setMessages] = useState<MessageData[]>([]);
-
-    useEffect(() => {
-        if (pageData.isFetched) {
-            const channel = pageData.data?.channel;
-            if (channel) {
-                setChannel(channel);
-                const ordered = reorderMessages(channel.messages);
-                setMessages(ordered);
-            }
-        }
-    }, [pageData]);
     return (
         <>
             <Head>
-                <title>Discord Mafia Archives</title>
+                <title>
+                    {channel?.name
+                        ? `Archive: ${channel.name}`
+                        : `Discord Mafia Archive`}
+                </title>
                 <meta
                     name="description"
-                    content="Archive of a specific channel (this is the same with all pages for now, will change)"
+                    content={
+                        channel
+                            ? `View archive data for #${channel.name}`
+                            : DEFAULT_DESC
+                    }
                 />
-                <link rel="icon" href="/favicon.ico" />
             </Head>
-
-            <main className="flex h-screen flex-row bg-discord-dark bg-polygon p-8 text-white">
-                <div className="w-96 bg-discord-darker">
-                    {channelsLoading
-                        ? "Loading..."
-                        : channels?.map((v) => {
-                              return (
-                                  <div
-                                      className="py-2 pl-2 text-base hover:cursor-pointer hover:bg-gray-600"
-                                      key={v.channelId}
-                                  >
-                                      #{v.name}
-                                  </div>
-                              );
-                          })}
-                </div>
-                <div className="flex grow flex-col bg-discord-dark pl-4">
-                    <div className="border-b-2 border-b-black py-4">
-                        #{channel?.name}
-                    </div>
-                    <div className="overflow-x-auto overflow-y-scroll ">
-                        {messages.map((v) => {
-                            return <MessageComp msg={v} key={v.messageId} />;
-                        })}
-                    </div>
-                </div>
-            </main>
+            <ChannelPage defaultChannelId={channel?.channelId} />
         </>
     );
+}
+
+/// Server Side Props
+
+type Context = {
+    channel?: Channel;
 };
 
-export default ChannelArchive;
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+    const rawId = ctx.query?.id;
+    if (!rawId) {
+        return {
+            props: {} as Context,
+        };
+    }
+
+    const channelId = rawId.toString();
+    const channel = await prisma.channel.findUnique({
+        where: {
+            channelId,
+        },
+        select: {
+            channelId: true,
+            name: true,
+        },
+    });
+
+    return {
+        props: {
+            channel: channel || undefined,
+        } as Context,
+    };
+};
