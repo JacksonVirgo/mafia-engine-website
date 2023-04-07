@@ -57,7 +57,7 @@ export default Message;
 
 export function MessageSkeleton() {
     return (
-        <div className="flex flex-row p-2">
+        <div className="flex animate-pulse flex-row p-2">
             <div className="flex-shrink p-1 pr-2 text-gray-500">
                 <span className="h-10 w-10 rounded-full"></span>
             </div>
