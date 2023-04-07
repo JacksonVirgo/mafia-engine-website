@@ -54,3 +54,26 @@ const Message: React.FC<MessageProps> = ({ msg }) => {
 };
 
 export default Message;
+
+export function MessageSkeleton() {
+    return (
+        <div className="flex flex-row p-2">
+            <div className="flex-shrink p-1 pr-2 text-gray-500">
+                <span className="h-10 w-10 rounded-full"></span>
+            </div>
+            <div className="grow">
+                <div className="flex flex-row items-center gap-4">
+                    <span className="flex font-extrabold text-white">
+                        <span className="w-48 rounded-md bg-gray-700">{`\u200B`}</span>
+                    </span>
+                    <span className="flex text-sm text-gray-500">
+                        <span className="w-20 rounded-md bg-gray-700">{`\u200B`}</span>
+                    </span>
+                </div>
+                <div className="mt-4 flex">
+                    <span className="h-16 w-96 rounded-md bg-gray-700">{`\u200B`}</span>
+                </div>
+            </div>
+        </div>
+    );
+}
