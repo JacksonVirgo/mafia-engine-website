@@ -5,7 +5,7 @@ import {
 } from "@prisma/client";
 import React, { useEffect, useState } from "react";
 import { api } from "~/utils/api";
-import MessageComp from "./Message";
+import MessageComp, { MessageSkeleton } from "./Message";
 
 type MessageData = Message & {
     author: DiscordAccount;
@@ -73,19 +73,48 @@ export default function Channel({ channelId }: ChannelProps) {
     return (
         <div className="flex grow flex-col bg-discord-dark pl-4">
             {isLoading ? (
-                "Loading..."
+                <ChannelSkeleton />
             ) : (
-                <>
-                    <div className="border-b-2 border-b-black py-4">
-                        #{channel?.name}
-                    </div>
-                    <div className="overflow-x-auto overflow-y-scroll ">
-                        {messages.map((v) => {
-                            return <MessageComp msg={v} key={v.messageId} />;
-                        })}
-                    </div>
-                </>
+                <ChannelHydrated channel={channel} messages={messages} />
             )}
         </div>
+    );
+}
+
+type Hydration = {
+    channel?: PrismaChannel;
+    messages: MessageData[];
+};
+export function ChannelHydrated({ channel, messages }: Hydration) {
+    return (
+        <>
+            <div className="border-b-2 border-b-black py-4">
+                #{channel?.name}
+            </div>
+            <div className="overflow-x-auto overflow-y-scroll ">
+                {messages.map((v) => {
+                    return <MessageComp msg={v} key={v.messageId} />;
+                })}
+            </div>
+        </>
+    );
+}
+
+export function ChannelSkeleton() {
+    /// create a function which returns X unique spans, where X is an arbitrary numver
+    const createSkeleton = (num: number) => {
+        return [...Array(num)].map((_, i) => <MessageSkeleton key={i} />);
+    };
+
+    return (
+        <>
+            <div className="flex border-b-2 border-b-black py-4">
+                {" "}
+                <span className="w-48 rounded-md bg-gray-700">{`\u200B`}</span>
+            </div>
+            <div className="overflow-x-auto overflow-y-scroll ">
+                {createSkeleton(25)}
+            </div>
+        </>
     );
 }
